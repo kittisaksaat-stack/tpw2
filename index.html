@@ -201,6 +201,33 @@ body::before{
   border-radius:999px;
 }
 
+.info div.update-chip{
+  cursor:pointer;
+  background:rgba(255,255,255,.24);
+  border-color:rgba(255,255,255,.42);
+  font-weight:500;
+  transition:.2s;
+  user-select:none;
+}
+
+.info div.update-chip:hover{
+  background:rgba(255,255,255,.38);
+  transform:translateY(-1px);
+}
+
+.info div.update-chip:active{
+  transform:translateY(0);
+}
+
+.info div.update-chip.busy{
+  cursor:progress;
+  opacity:.8;
+}
+
+.info div.update-chip.busy i{
+  animation:spin 1s linear infinite;
+}
+
 .section-label{
   color:#EAF2FF;
   font-size:13px;
@@ -376,6 +403,95 @@ body::before{
   color:#FCA5A5;
 }
 
+.card.checking{
+  opacity:.75;
+  cursor:progress;
+}
+
+.card.checking .arrow i{
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(10,10,30,.6);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  z-index:999;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+
+.modal-bg.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  background:rgba(255,255,255,.16);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--glass-border);
+  border-radius:24px;
+  padding:30px 26px 24px;
+  max-width:360px;
+  width:100%;
+  text-align:center;
+  color:white;
+  transform:translateY(14px) scale(.96);
+  transition:.25s;
+}
+
+.modal-bg.show .modal-box{
+  transform:translateY(0) scale(1);
+}
+
+.modal-box .m-icon{
+  font-size:42px;
+  color:#FCA5A5;
+  margin-bottom:14px;
+}
+
+.modal-box h3{
+  font-size:17px;
+  font-weight:600;
+  margin-bottom:8px;
+}
+
+.modal-box p{
+  font-size:13px;
+  opacity:.85;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+.modal-box button{
+  font-family:'Prompt',sans-serif;
+  font-size:14px;
+  font-weight:500;
+  color:white;
+  background:rgba(255,255,255,.22);
+  border:1px solid var(--glass-border);
+  border-radius:999px;
+  padding:10px 30px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.modal-box button:hover{
+  background:rgba(255,255,255,.34);
+}
+
 </style>
 
 </head>
@@ -413,6 +529,11 @@ Cloud
 <div>
 <i class="fa-solid fa-shield-halved"></i>
 Secure
+</div>
+
+<div class="update-chip" id="updateApp" role="button" tabindex="0" title="ล้างแคชและโหลดเวอร์ชันล่าสุด">
+<i class="fa-solid fa-rotate"></i>
+<span id="updateAppTxt">Update App</span>
 </div>
 
 </div>
@@ -549,7 +670,7 @@ Secure
 
 </a>
 
-<a class="card" href="http://125.27.30.113/monitor/login.php" target="_blank">
+<a class="card" id="serverCard" href="http://125.27.30.113/monitor/login.php" target="_blank">
 
 <div class="left">
 
@@ -581,6 +702,111 @@ Developed with <span class="heart">♥</span> by Kittisak
 </div>
 
 </div>
+
+<div class="modal-bg" id="offlineModal">
+<div class="modal-box">
+<div class="m-icon"><i class="fa-solid fa-server"></i></div>
+<h3>ขณะนี้ Server หยุดให้บริการ</h3>
+<p>Server Offline<br>ไม่สามารถเชื่อมต่อกับระบบศูนย์ควบคุมได้ในขณะนี้ กรุณาลองใหม่อีกครั้งภายหลัง</p>
+<button type="button" id="offlineClose">ตกลง</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var card  = document.getElementById('serverCard');
+  var modal = document.getElementById('offlineModal');
+  var close = document.getElementById('offlineClose');
+  if(!card) return;
+
+  var TIMEOUT = 6000;
+
+  function showModal(){ modal.classList.add('show'); }
+  function hideModal(){ modal.classList.remove('show'); }
+
+  close.addEventListener('click', hideModal);
+  modal.addEventListener('click', function(e){ if(e.target === modal) hideModal(); });
+
+  // ตรวจสอบว่า server ตอบสนองหรือไม่ (opaque request, ไม่ต้องมี CORS)
+  function probe(url){
+    return new Promise(function(resolve){
+      var done = false;
+      var timer = setTimeout(function(){
+        if(!done){ done = true; resolve(false); }
+      }, TIMEOUT);
+
+      fetch(url, { mode:'no-cors', cache:'no-store' })
+        .then(function(){
+          if(!done){ done = true; clearTimeout(timer); resolve(true); }
+        })
+        .catch(function(){
+          if(!done){ done = true; clearTimeout(timer); resolve(false); }
+        });
+    });
+  }
+
+  card.addEventListener('click', async function(e){
+    var url = card.getAttribute('href');
+
+    // ถ้าหน้าเว็บเป็น https แต่ลิงก์เป็น http เบราว์เซอร์จะบล็อกการตรวจสอบ
+    // (mixed content) จึงข้ามการเช็คเพื่อไม่ให้แจ้งเตือนผิดพลาด
+    var mixed = location.protocol === 'https:' && url.indexOf('http://') === 0;
+    if(mixed) return;
+
+    e.preventDefault();
+    if(card.classList.contains('checking')) return;
+    card.classList.add('checking');
+
+    var ok = await probe(url);
+
+    card.classList.remove('checking');
+
+    if(ok){
+      window.open(url, '_blank');
+    }else{
+      showModal();
+    }
+  });
+})();
+
+/* ---------- Update App : ล้างแคชและโหลดเวอร์ชันล่าสุดจาก GitHub ---------- */
+(function(){
+  var chip = document.getElementById('updateApp');
+  var txt  = document.getElementById('updateAppTxt');
+  if(!chip) return;
+
+  async function doUpdate(){
+    if(chip.classList.contains('busy')) return;
+    chip.classList.add('busy');
+    txt.textContent = 'กำลังอัปเดต...';
+
+    try{
+      // 1) ยกเลิก Service Worker ทั้งหมด
+      if('serviceWorker' in navigator){
+        var regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(function(r){ return r.unregister(); }));
+      }
+
+      // 2) ล้าง Cache Storage ของ PWA ทั้งหมด
+      if('caches' in window){
+        var keys = await caches.keys();
+        await Promise.all(keys.map(function(k){ return caches.delete(k); }));
+      }
+    }catch(err){
+      console.warn('update cleanup failed:', err);
+    }
+
+    // 3) โหลดหน้าใหม่พร้อม query กันแคชของเบราว์เซอร์/CDN
+    txt.textContent = 'กำลังโหลดใหม่...';
+    location.replace(location.origin + location.pathname + '?v=' + Date.now());
+  }
+
+  chip.addEventListener('click', doUpdate);
+  chip.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); doUpdate(); }
+  });
+})();
+</script>
 
 </body>
 
