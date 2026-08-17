@@ -105,7 +105,7 @@ body{
 
   /* ห้ามตัดกลางคำ — ภาษาไทยไม่มีช่องว่างคั่นคำ ถ้าไม่กำหนด
      เบราว์เซอร์บางตัวจะตัดตรงไหนก็ได้ ทำให้คำขาดกลางคัน
-     จุดที่ตัดได้จริงกำหนดด้วยแท็ก <wbr> ในเนื้อหา */
+     จุดที่ตัดได้จริงกำหนดด้วยแท็ก  ในเนื้อหา */
   word-break:normal;
   overflow-wrap:normal;
   line-break:strict;
@@ -709,6 +709,12 @@ body{
   .live-dot::after{ display:none; }
 }
 
+
+/* ล็อกคำไทยไม่ให้ถูกฉีกกลางคำ — แต่ละ  คือหนึ่งคำ
+   เบราว์เซอร์ตัดบรรทัดได้เฉพาะ "ระหว่าง" span เท่านั้น
+   (แท็ก wbr ใช้ไม่ได้ผล เพราะมันแค่เพิ่มจุดตัด ไม่ได้ห้ามตัดที่อื่น) */
+.w{ white-space:nowrap; }
+
 </style>
 
 </head>
@@ -743,7 +749,7 @@ body{
       </svg>
     </div>
     <div>
-      <h1>โรงเรียน<wbr>ทุ่งโพวิทยา</h1>
+      <h1><span class="w">โรงเรียน</span><span class="w">ทุ่งโพวิทยา</span></h1>
       <p><span class="live-dot"></span>Digital School Platform</p>
     </div>
   </div>
@@ -759,14 +765,14 @@ body{
 
 </header>
 
-<div class="section-label">เมนู<wbr>ระบบ<wbr>ทั้งหมด</div>
+<div class="section-label"><span class="w">เมนู</span><span class="w">ระบบ</span><span class="w">ทั้งหมด</span></div>
 
 <nav class="menu">
 
   <a class="card" style="--c:var(--c-plan)" href="https://script.google.com/a/macros/nongjok.ac.th/s/AKfycbxNDMDe8Cp8WYuo08rYrvCJbmbBevPND0dp2wRLxA6tQTNT-AfZWCSvlyejxTQ6VCo0Zw/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-diagram-project"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>แผนงาน<wbr>และ<wbr>โครงการ</h2>
+      <h2><span class="w">ระบบ</span><span class="w">แผนงาน</span><span class="w">และ</span><span class="w">โครงการ</span></h2>
       <span class="sub">Project Management System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -775,7 +781,7 @@ body{
   <a class="card" style="--c:var(--c-attend)" href="https://script.google.com/macros/s/AKfycbwthQWsTmnOM_Y9gXFHZa2xbWZs40rSqxDHfk7E-grZkOd1RMKIY0VFUy4TImNXgTPpsQ/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-user-clock"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>เช็คเวลา<wbr>มาเรียน<wbr>ของ<wbr>นักเรียน</h2>
+      <h2><span class="w">ระบบ</span><span class="w">เช็คเวลา</span><span class="w">มาเรียน</span><span class="w">ของ</span><span class="w">นักเรียน</span></h2>
       <span class="sub">Student Time Attendance</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -784,7 +790,7 @@ body{
   <a class="card" style="--c:var(--c-leave)" href="https://script.google.com/macros/s/AKfycbwJj_SYHR7y9Hi8KLzCq91LDaucroUg2HMiyMoQyPZ3oU1yws3AiEHXsQ6wHVnu6zb-JA/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-file-signature"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>การลา<wbr>และ<wbr>ขออนุญาต<wbr>ออกนอก<wbr>สถานที่</h2>
+      <h2><span class="w">ระบบ</span><span class="w">การลา</span><span class="w">และ</span><span class="w">ขออนุญาต</span><span class="w">ออก</span><span class="w">นอกสถานที่</span></h2>
       <span class="sub">Leave &amp; Off-Site Permission System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -793,7 +799,7 @@ body{
   <a class="card" style="--c:var(--c-safety)" href="https://script.google.com/macros/s/AKfycbwuAQJCUEGq04f6brBtPFwHVrH7Kh9LXvDxy-nyk0KuK61v4AXwDP-8qX3Y1y5WI62bIQ/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-tower-broadcast"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>เฝ้าระวัง<wbr>และ<wbr>แจ้งเตือน<wbr>ความปลอดภัย<wbr>ใน<wbr>สถานศึกษา</h2>
+      <h2><span class="w">ระบบ</span><span class="w">เฝ้าระวัง</span><span class="w">และ</span><span class="w">แจ้งเตือน</span><span class="w">ความปลอดภัย</span><span class="w">ใน</span><span class="w">สถานศึกษา</span></h2>
       <span class="sub">School Safety Monitoring &amp; Alert System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -802,7 +808,7 @@ body{
   <a class="card" style="--c:var(--c-hr)" href="https://script.google.com/macros/s/AKfycbyQgwz2-VlrZPWU0EZeo8kyXflR_w_BysrwU7MgOWfUyXD0PmyAvxDiohbC4vbpU-6h/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-users-gear"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>สารสนเทศ<wbr>บริหาร<wbr>งานบุคคล</h2>
+      <h2><span class="w">ระบบ</span><span class="w">สารสนเทศ</span><span class="w">บริหาร</span><span class="w">งานบุคคล</span></h2>
       <span class="sub">Human Resource Information System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -811,7 +817,7 @@ body{
   <a class="card" style="--c:var(--c-server)" id="serverCard" href="http://125.27.30.113/monitor/login.php" target="_blank">
     <div class="icon"><i class="fa-solid fa-server"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>ศูนย์ควบคุม Server</h2>
+      <h2><span class="w">ระบบ</span><span class="w">ศูนย์ควบคุม</span> <span class="w">Server</span></h2>
       <span class="sub">TPW Server</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -820,7 +826,7 @@ body{
   <a class="card" style="--c:var(--c-store)" href="http://125.27.30.113/pos/login" target="_blank">
     <div class="icon"><i class="fa-solid fa-store"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>สวัสดิการ<wbr>ร้านค้า<wbr>ออนไลน์</h2>
+      <h2><span class="w">ระบบ</span><span class="w">สวัสดิการ</span><span class="w">ร้านค้า</span><span class="w">ออนไลน์</span></h2>
       <span class="sub">Online Welfare Store System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -829,7 +835,7 @@ body{
   <a class="card disabled" style="--c:var(--c-data)" href="#">
     <div class="icon"><i class="fa-solid fa-database"></i></div>
     <div class="text">
-      <h2>ระบบ<wbr>คลังข้อมูล<span class="badge">เร็วๆ นี้</span></h2>
+      <h2><span class="w">ระบบ</span><span class="w">คลังข้อมูล</span><span class="badge">เร็วๆ นี้</span></h2>
       <span class="sub">Data Warehouse System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -847,8 +853,8 @@ body{
 <div class="modal-bg" id="offlineModal">
   <div class="modal-box">
     <div class="m-icon"><i class="fa-solid fa-server"></i></div>
-    <h3>ขณะนี้ Server <wbr>หยุด<wbr>ให้บริการ</h3>
-    <p>Server Offline<br>ไม่สามารถเชื่อมต่อกับระบบ<wbr>ศูนย์ควบคุมได้ในขณะนี้ กรุณา<wbr>ลองใหม่<wbr>อีกครั้ง<wbr>ภายหลัง</p>
+    <h3><span class="w">ขณะนี้</span> <span class="w">Server</span> <span class="w">หยุด</span><span class="w">ให้บริการ</span></h3>
+    <p>Server Offline<br><span class="w">ไม่สามารถ</span><span class="w">เชื่อมต่อ</span><span class="w">กับ</span><span class="w">ระบบ</span><span class="w">ศูนย์ควบคุม</span><span class="w">ได้</span><span class="w">ใน</span><span class="w">ขณะนี้</span> <span class="w">กรุณา</span><span class="w">ลองใหม่</span><span class="w">อีกครั้ง</span><span class="w">ภายหลัง</span></p>
     <button type="button" id="offlineClose">ตกลง</button>
   </div>
 </div>
@@ -910,7 +916,7 @@ body{
   });
 })();
 
-/* ---------- Update App : ล้างแคช<wbr>และ<wbr>โหลด<wbr>เวอร์ชัน<wbr>ล่าสุดจาก GitHub ---------- */
+/* ---------- Update App : ล้างแคชและโหลดเวอร์ชันล่าสุดจาก GitHub ---------- */
 (function(){
   var chip = document.getElementById('updateApp');
   var txt  = document.getElementById('updateAppTxt');
