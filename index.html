@@ -102,6 +102,15 @@ body{
   min-height:100vh;
   padding:26px 18px calc(34px + env(safe-area-inset-bottom));
   -webkit-font-smoothing:antialiased;
+
+  /* ห้ามตัดกลางคำ — ภาษาไทยไม่มีช่องว่างคั่นคำ ถ้าไม่กำหนด
+     เบราว์เซอร์บางตัวจะตัดตรงไหนก็ได้ ทำให้คำขาดกลางคัน
+     จุดที่ตัดได้จริงกำหนดด้วยแท็ก <wbr> ในเนื้อหา */
+  word-break:normal;
+  overflow-wrap:normal;
+  line-break:strict;
+  -webkit-hyphens:none;
+  hyphens:none;
 }
 
 .container{
@@ -298,7 +307,8 @@ body{
   position:relative;
   z-index:1;
   display:flex;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
+  align-items:center;
   gap:8px;
   margin-top:20px;
   padding-top:18px;
@@ -316,6 +326,8 @@ body{
   border:1px solid rgba(255,255,255,.75);
   padding:6px 12px;
   border-radius:9px;
+  white-space:nowrap;
+  flex-shrink:0;
 }
 
 .chip i{ font-size:11px; color:#9A3412; }
@@ -658,9 +670,33 @@ body{
 
 /* ---------- RESPONSIVE ---------- */
 
+/* จอมือถือ: ย่อชิปข้อมูลเหลือแค่ไอคอน เพื่อให้ปุ่ม Update อยู่บรรทัดเดียวกัน */
+@media (max-width:520px){
+  .info{ gap:6px; }
+  .chip{ padding:7px 10px; }
+  .chip:not(.update-chip) .chip-label{
+    position:absolute;
+    width:1px; height:1px;
+    padding:0; margin:-1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  }
+  .chip:not(.update-chip) i{ font-size:12.5px; }
+}
+
 @media (max-width:380px){
   .brand h1{ font-size:19.5px; }
   .text h2{ font-size:14.5px; }
+  .chip{ padding:7px 9px; font-size:11.5px; }
+  .icon{ width:42px; height:42px; font-size:17px; border-radius:12px; }
+  .card{ gap:12px; padding:13px 14px; }
+}
+
+/* จอแคบมาก (เช่น iPhone SE): ตัดชิปข้อมูลออก เหลือแต่ปุ่ม Update
+   กันไม่ให้ล้นออกนอกกรอบตอนข้อความในปุ่มเปลี่ยนเป็น "กำลังโหลดใหม่..." */
+@media (max-width:345px){
+  .chip:not(.update-chip){ display:none; }
   .chip.update-chip{ margin-left:0; }
 }
 
@@ -707,15 +743,15 @@ body{
       </svg>
     </div>
     <div>
-      <h1>โรงเรียนทุ่งโพวิทยา</h1>
+      <h1>โรงเรียน<wbr>ทุ่งโพวิทยา</h1>
       <p><span class="live-dot"></span>Digital School Platform</p>
     </div>
   </div>
 
   <div class="info">
-    <span class="chip"><i class="fa-solid fa-mobile-screen"></i>Mobile Friendly</span>
-    <span class="chip"><i class="fa-solid fa-cloud"></i>Cloud</span>
-    <span class="chip"><i class="fa-solid fa-shield-halved"></i>Secure</span>
+    <span class="chip" title="Mobile Friendly"><i class="fa-solid fa-mobile-screen"></i><span class="chip-label">Mobile Friendly</span></span>
+    <span class="chip" title="Cloud"><i class="fa-solid fa-cloud"></i><span class="chip-label">Cloud</span></span>
+    <span class="chip" title="Secure"><i class="fa-solid fa-shield-halved"></i><span class="chip-label">Secure</span></span>
     <span class="chip update-chip" id="updateApp" role="button" tabindex="0" title="ล้างแคชและโหลดเวอร์ชันล่าสุด">
       <i class="fa-solid fa-rotate"></i><span id="updateAppTxt">Update App</span>
     </span>
@@ -723,14 +759,14 @@ body{
 
 </header>
 
-<div class="section-label">เมนูระบบทั้งหมด</div>
+<div class="section-label">เมนู<wbr>ระบบ<wbr>ทั้งหมด</div>
 
 <nav class="menu">
 
   <a class="card" style="--c:var(--c-plan)" href="https://script.google.com/a/macros/nongjok.ac.th/s/AKfycbxNDMDe8Cp8WYuo08rYrvCJbmbBevPND0dp2wRLxA6tQTNT-AfZWCSvlyejxTQ6VCo0Zw/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-diagram-project"></i></div>
     <div class="text">
-      <h2>ระบบแผนงานและโครงการ</h2>
+      <h2>ระบบ<wbr>แผนงาน<wbr>และ<wbr>โครงการ</h2>
       <span class="sub">Project Management System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -739,7 +775,7 @@ body{
   <a class="card" style="--c:var(--c-attend)" href="https://script.google.com/macros/s/AKfycbwthQWsTmnOM_Y9gXFHZa2xbWZs40rSqxDHfk7E-grZkOd1RMKIY0VFUy4TImNXgTPpsQ/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-user-clock"></i></div>
     <div class="text">
-      <h2>ระบบเช็คเวลามาเรียนของนักเรียน</h2>
+      <h2>ระบบ<wbr>เช็คเวลา<wbr>มาเรียน<wbr>ของ<wbr>นักเรียน</h2>
       <span class="sub">Student Time Attendance</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -748,7 +784,7 @@ body{
   <a class="card" style="--c:var(--c-leave)" href="https://script.google.com/macros/s/AKfycbwJj_SYHR7y9Hi8KLzCq91LDaucroUg2HMiyMoQyPZ3oU1yws3AiEHXsQ6wHVnu6zb-JA/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-file-signature"></i></div>
     <div class="text">
-      <h2>ระบบการลาและขออนุญาตออกนอกสถานที่</h2>
+      <h2>ระบบ<wbr>การลา<wbr>และ<wbr>ขออนุญาต<wbr>ออกนอก<wbr>สถานที่</h2>
       <span class="sub">Leave &amp; Off-Site Permission System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -757,7 +793,7 @@ body{
   <a class="card" style="--c:var(--c-safety)" href="https://script.google.com/macros/s/AKfycbwuAQJCUEGq04f6brBtPFwHVrH7Kh9LXvDxy-nyk0KuK61v4AXwDP-8qX3Y1y5WI62bIQ/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-tower-broadcast"></i></div>
     <div class="text">
-      <h2>ระบบเฝ้าระวังและแจ้งเตือนความปลอดภัยในสถานศึกษา</h2>
+      <h2>ระบบ<wbr>เฝ้าระวัง<wbr>และ<wbr>แจ้งเตือน<wbr>ความปลอดภัย<wbr>ใน<wbr>สถานศึกษา</h2>
       <span class="sub">School Safety Monitoring &amp; Alert System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -766,7 +802,7 @@ body{
   <a class="card" style="--c:var(--c-hr)" href="https://script.google.com/macros/s/AKfycbyQgwz2-VlrZPWU0EZeo8kyXflR_w_BysrwU7MgOWfUyXD0PmyAvxDiohbC4vbpU-6h/exec" target="_blank">
     <div class="icon"><i class="fa-solid fa-users-gear"></i></div>
     <div class="text">
-      <h2>ระบบสารสนเทศบริหารงานบุคคล</h2>
+      <h2>ระบบ<wbr>สารสนเทศ<wbr>บริหาร<wbr>งานบุคคล</h2>
       <span class="sub">Human Resource Information System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -775,7 +811,7 @@ body{
   <a class="card" style="--c:var(--c-server)" id="serverCard" href="http://125.27.30.113/monitor/login.php" target="_blank">
     <div class="icon"><i class="fa-solid fa-server"></i></div>
     <div class="text">
-      <h2>ระบบศูนย์ควบคุม Server</h2>
+      <h2>ระบบ<wbr>ศูนย์ควบคุม Server</h2>
       <span class="sub">TPW Server</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -784,7 +820,7 @@ body{
   <a class="card" style="--c:var(--c-store)" href="http://125.27.30.113/pos/login" target="_blank">
     <div class="icon"><i class="fa-solid fa-store"></i></div>
     <div class="text">
-      <h2>ระบบสวัสดิการร้านค้าออนไลน์</h2>
+      <h2>ระบบ<wbr>สวัสดิการ<wbr>ร้านค้า<wbr>ออนไลน์</h2>
       <span class="sub">Online Welfare Store System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -793,7 +829,7 @@ body{
   <a class="card disabled" style="--c:var(--c-data)" href="#">
     <div class="icon"><i class="fa-solid fa-database"></i></div>
     <div class="text">
-      <h2>ระบบคลังข้อมูล<span class="badge">เร็วๆ นี้</span></h2>
+      <h2>ระบบ<wbr>คลังข้อมูล<span class="badge">เร็วๆ นี้</span></h2>
       <span class="sub">Data Warehouse System</span>
     </div>
     <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -811,8 +847,8 @@ body{
 <div class="modal-bg" id="offlineModal">
   <div class="modal-box">
     <div class="m-icon"><i class="fa-solid fa-server"></i></div>
-    <h3>ขณะนี้ Server หยุดให้บริการ</h3>
-    <p>Server Offline<br>ไม่สามารถเชื่อมต่อกับระบบศูนย์ควบคุมได้ในขณะนี้ กรุณาลองใหม่อีกครั้งภายหลัง</p>
+    <h3>ขณะนี้ Server <wbr>หยุด<wbr>ให้บริการ</h3>
+    <p>Server Offline<br>ไม่สามารถเชื่อมต่อกับระบบ<wbr>ศูนย์ควบคุมได้ในขณะนี้ กรุณา<wbr>ลองใหม่<wbr>อีกครั้ง<wbr>ภายหลัง</p>
     <button type="button" id="offlineClose">ตกลง</button>
   </div>
 </div>
@@ -874,7 +910,7 @@ body{
   });
 })();
 
-/* ---------- Update App : ล้างแคชและโหลดเวอร์ชันล่าสุดจาก GitHub ---------- */
+/* ---------- Update App : ล้างแคช<wbr>และ<wbr>โหลด<wbr>เวอร์ชัน<wbr>ล่าสุดจาก GitHub ---------- */
 (function(){
   var chip = document.getElementById('updateApp');
   var txt  = document.getElementById('updateAppTxt');
